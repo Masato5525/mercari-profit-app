@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>メルカリ利益計算</title>
+
+<style>
+body {
+  font-family: Arial;
+  padding: 30px;
+  max-width: 500px;
+  margin: auto;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+}
+
+.result {
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.profit-value {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.profit-plus {
+  color: green;
+}
+
+.profit-minus {
+  color: red;
+}
+
+.history {
+  margin-top: 20px;
+  padding: 10px;
+  background: #f0f0f0;
+  font-size: 14px;
+}
+
+.shipping-table {
+  margin-top: 20px;
+  font-size: 14px;
+  background: #f5f5f5;
+  padding: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>メルカリ利益計算アプリ</h2>
+
+<label>仕入れ価格</label>
+<input type="number" id="cost">
+
+<label>販売価格</label>
+<input type="number" id="price">
+
+<label>送料</label>
+<input type="number" id="shipping">
+
+<div class="shipping-table">
+<b>📦 ヤマト（らくらくメルカリ便）</b><br>
+ネコポス: 210円<br>
+宅急便コンパクト: 450円<br>
+60サイズ: 750円<br>
+80サイズ: 850円<br><br>
+
+<b>📮 日本郵便（ゆうゆうメルカリ便）</b><br>
+ゆうパケットポスト: 215円<br>
+ゆうパケットプラス: 455円<br>
+60サイズ: 770円<br>
+80サイズ: 870円
+</div>
+
+
+<div class="result" id="output"></div>
+
+<div class="history">
+<b>📊 計算履歴（最新5件）</b>
+<div id="historyList"></div>
+</div>
+
+<script>
+const costInput = document.getElementById("cost");
+const priceInput = document.getElementById("price");
+const shippingInput = document.getElementById("shipping");
+const output = document.getElementById("output");
+const historyList = document.getElementById("historyList");
+
+function calculate() {
+  const cost = Number(costInput.value);
+  const price = Number(priceInput.value);
+  const shipping = Number(shippingInput.value);
+
+  if (!price) {
+    output.innerHTML = "";
+    return;
+  }
+
+  const fee = price * 0.1;
+  const profit = price - fee - cost - shipping;
+  const rate = (profit / price) * 100;
+
+  const profitClass = profit >= 0 ? "profit-plus" : "profit-minus";
+
+  output.innerHTML =
+    "<div>利益: <span class='profit-value " + profitClass + "'>" 
+      + Math.round(profit) + "円</span></div>" +
+    "<div>手数料: " + Math.round(fee) + "円</div>" +
+    "<div>利益率: " + rate.toFixed(1) + "%</div>";
+
+  saveHistory(Math.round(profit), Math.round(fee), shipping, rate.toFixed(1));
+}
+
+function saveHistory(profit, fee, shipping, rate) {
+  let history = JSON.parse(localStorage.getItem("profitHistory")) || [];
+
+  history.unshift({
+    profit: profit,
+    fee: fee,
+    shipping: shipping,
+    rate: rate
+  });
+
+  if (history.length > 5) {
+    history.pop();
+  }
+
+  localStorage.setItem("profitHistory", JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  let history = JSON.parse(localStorage.getItem("profitHistory")) || [];
+
+  historyList.innerHTML = "";
+
+  history.forEach(item => {
+    historyList.innerHTML +=
+      "<div>利益: " + item.profit +
+      "円 / 手数料: " + item.fee +
+      "円 / 送料: " + item.shipping +
+      "円 / 利益率: " + item.rate + "%</div>";
+  });
+}
+
+costInput.addEventListener("input", calculate);
+priceInput.addEventListener("input", calculate);
+shippingInput.addEventListener("input", calculate);
+
+renderHistory();
+</script>
+
+</body>
+</html>
