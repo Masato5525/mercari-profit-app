@@ -79,6 +79,10 @@ input {
 
 <div class="result" id="output"></div>
 
+<label>コメント<label>
+<input type="text" id="comment" placeholder="商品名">
+<button onclick="saveCurrent()">保存</button>
+
 <div class="shipping-table">
 <b>📦 ヤマト（らくらくメルカリ便）</b><br>
 ネコポス: 210円<br>
@@ -92,8 +96,6 @@ input {
 60サイズ: 770円<br>
 80サイズ: 870円
 </div>
-
-
 
 <div class="history">
 <b>📊 計算履歴（最新5件）</b>
@@ -138,33 +140,72 @@ function calculate() {
     "<div>手数料: " + Math.round(fee) + "円</div>" +
     "<div>利益率: " + rate.toFixed(1) + "%</div>";
 
-  // 履歴に保存
-  saveHistory(Math.round(profit), Math.round(fee), shipping, rate.toFixed(1));
+  // 履歴に保存(自動保存を一旦消す)
+  //saveHistory(Math.round(profit), Math.round(fee), shipping, rate.toFixed(1));
 }
 
-// 計算履歴を保存する関数
-function saveHistory(profit, fee, shipping, rate) {
-  // localStorageから履歴を取得（なければ空配列）
+//保存ボタンがクリックされたら現在の計算結果を履歴に保存する関数
+function saveCurrent() {
+  const cost = Number(costInput.value);
+  const price = Number(priceInput.value);
+  const shipping = Number(shippingInput.value);
+  const comment = document.getElementById("comment").value;
+
+  if (!price) return; // 販売価格が入力されていない場合は保存しない
+
+  const fee = price * 0.1;
+  const profit = price - fee - cost - shipping;
+  const rate = (profit / price) * 100;
+
+  //localStorageから過去の履歴を取得（なければ空配列）
   let history = JSON.parse(localStorage.getItem("profitHistory")) || [];
 
-  // 新しい履歴を先頭に追加
+  //新しい履歴を先頭に追加
   history.unshift({
-    profit: profit,
-    fee: fee,
+    profit: Math.round(profit),
+    fee: Math.round(fee),
     shipping: shipping,
-    rate: rate
+    rate: rate.toFixed(1),
+    comment: comment
   });
 
-  // 履歴を5件以内に制限
+  //履歴が5件超えたら古いデータを削除
   if (history.length > 5) {
     history.pop();
   }
 
-  // localStorageに保存
+  //更新した履歴データをlocalStorageに保存
   localStorage.setItem("profitHistory", JSON.stringify(history));
-  // 履歴を表示
+
+  //履歴表示を更新
   renderHistory();
-}
+
+  document.getElementById("comment").value = ""; // コメント入力をクリア
+  }
+
+// // 計算履歴を保存する関数
+//function saveHistory(profit, fee, shipping, rate) {
+  // // localStorageから履歴を取得（なければ空配列）
+  //let history = JSON.parse(localStorage.getItem("profitHistory")) || [];
+
+  // // 新しい履歴を先頭に追加
+  //history.unshift({
+    //profit: profit,
+    // fee: fee,
+    // shipping: shipping,
+    // rate: rate
+  //});
+
+  // // 履歴を5件以内に制限
+  // if (history.length > 5) {
+  //   history.pop();
+  // }
+
+  // // localStorageに保存
+  // localStorage.setItem("profitHistory", JSON.stringify(history));
+  // // 履歴を表示
+  // renderHistory();
+//}
 
 // 履歴を表示する関数
 function renderHistory() {
@@ -180,7 +221,8 @@ function renderHistory() {
       "<div>利益: " + item.profit +
       "円 / 手数料: " + item.fee +
       "円 / 送料: " + item.shipping +
-      "円 / 利益率: " + item.rate + "%</div>";
+      "円 / 利益率: " + item.rate + "%</div>"
+      "<div>コメント: " + (item.comment || "") + "</div><hr>";
   });
 }
 
