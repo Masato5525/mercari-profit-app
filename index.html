@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="UTF-8">
 <title>メルカリ利益計算</title>
 
 <style>
 body {
   font-family: Arial;
-  padding: 30px;
+  padding: 10px;
   max-width: 500px;
   margin: auto;
 }
@@ -49,6 +50,8 @@ input {
   font-size: 14px;
   background: #f5f5f5;
   padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
 }
 </style>
 </head>
@@ -89,40 +92,53 @@ input {
 </div>
 
 <script>
+// DOM要素の取得
 const costInput = document.getElementById("cost");
 const priceInput = document.getElementById("price");
 const shippingInput = document.getElementById("shipping");
 const output = document.getElementById("output");
 const historyList = document.getElementById("historyList");
 
+// 利益を計算して表示する関数
 function calculate() {
+  // 入力値を取得
   const cost = Number(costInput.value);
   const price = Number(priceInput.value);
   const shipping = Number(shippingInput.value);
 
+  // 販売価格が入力されていない場合は何も表示しない
   if (!price) {
     output.innerHTML = "";
     return;
   }
 
+  // 手数料を計算（販売価格の10%）
   const fee = price * 0.1;
+  // 利益を計算（販売価格 - 手数料 - 仕入れ価格 - 送料）
   const profit = price - fee - cost - shipping;
+  // 利益率を計算
   const rate = (profit / price) * 100;
 
+  // 利益がプラスかマイナスかでクラスを決定
   const profitClass = profit >= 0 ? "profit-plus" : "profit-minus";
 
+  // 結果を表示
   output.innerHTML =
     "<div>利益: <span class='profit-value " + profitClass + "'>" 
       + Math.round(profit) + "円</span></div>" +
     "<div>手数料: " + Math.round(fee) + "円</div>" +
     "<div>利益率: " + rate.toFixed(1) + "%</div>";
 
+  // 履歴に保存
   saveHistory(Math.round(profit), Math.round(fee), shipping, rate.toFixed(1));
 }
 
+// 計算履歴を保存する関数
 function saveHistory(profit, fee, shipping, rate) {
+  // localStorageから履歴を取得（なければ空配列）
   let history = JSON.parse(localStorage.getItem("profitHistory")) || [];
 
+  // 新しい履歴を先頭に追加
   history.unshift({
     profit: profit,
     fee: fee,
@@ -130,19 +146,26 @@ function saveHistory(profit, fee, shipping, rate) {
     rate: rate
   });
 
+  // 履歴を5件以内に制限
   if (history.length > 5) {
     history.pop();
   }
 
+  // localStorageに保存
   localStorage.setItem("profitHistory", JSON.stringify(history));
+  // 履歴を表示
   renderHistory();
 }
 
+// 履歴を表示する関数
 function renderHistory() {
+  // localStorageから履歴を取得
   let history = JSON.parse(localStorage.getItem("profitHistory")) || [];
 
+  // 履歴リストをクリア
   historyList.innerHTML = "";
 
+  // 各履歴項目を表示
   history.forEach(item => {
     historyList.innerHTML +=
       "<div>利益: " + item.profit +
@@ -152,10 +175,12 @@ function renderHistory() {
   });
 }
 
+// 入力フィールドにイベントリスナーを追加（入力時に計算を実行）
 costInput.addEventListener("input", calculate);
 priceInput.addEventListener("input", calculate);
 shippingInput.addEventListener("input", calculate);
 
+// ページ読み込み時に履歴を表示
 renderHistory();
 </script>
 
