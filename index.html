@@ -61,6 +61,23 @@ input {
   font-size: 16px;
   box-sizing: border-box;
 }
+
+button {
+  width: 100%;
+  padding: 18px;
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 15px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.97);
+}
 </style>
 </head>
 
@@ -217,12 +234,14 @@ function renderHistory() {
 
   // 各履歴項目を表示
   history.forEach(item => {
-    historyList.innerHTML +=
-      "<div>利益: " + item.profit +
-      "円 / 手数料: " + item.fee +
-      "円 / 送料: " + item.shipping +
-      "円 / 利益率: " + item.rate + "%</div>" +
-      "<div>コメント: " + (item.comment || "") + "</div><hr>";
+    historyList.innerHTML += `
+      <div>
+        利益: ${item.profit}円 / 手数料: ${item.fee}円 /
+        送料: ${item.shipping}円 / 利益率: ${item.rate}%
+      </div>
+      <div>コメント: ${item.comment || ""}</div>
+      <hr>
+    `;
   });
 }
 
