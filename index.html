@@ -53,6 +53,13 @@ input {
   width: 100%;
   box-sizing: border-box;
 }
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  font-size: 16px;
+}
 </style>
 </head>
 
@@ -124,7 +131,7 @@ function calculate() {
 
   // 結果を表示
   output.innerHTML =
-    "<div>利益: <span class='profit-value " + profitClass + "'>" 
+    "<div>利益: <span class='profit-value " + profitClass + "'>"
       + Math.round(profit) + "円</span></div>" +
     "<div>手数料: " + Math.round(fee) + "円</div>" +
     "<div>利益率: " + rate.toFixed(1) + "%</div>";
