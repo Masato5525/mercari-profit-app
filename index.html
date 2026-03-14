@@ -3,7 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="UTF-8">
-<title>メルカリ利益計算</title>
+<title>フリマ利益計算</title>
 
 <style>
 body {
@@ -11,6 +11,18 @@ body {
   padding: 10px;
   max-width: 500px;
   margin: auto;
+}
+
+.market-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.market-buttons button {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
 }
 
 input {
@@ -89,7 +101,15 @@ button:active {
 
 <body>
 
-<h2>メルカリ利益計算アプリ</h2>
+<h2>フリマ利益計算</h2>
+
+<div class="market-buttons">
+
+<button onclick="setMarket('mercari')">メルカリ</button>
+<button onclick="setMarket('rakuma')">ラクマ</button>
+<button onclick="setMarket('yahoo')">Yahoo</button>
+
+</div>
 
 <label>仕入れ価格</label>
 <input type="number" id="cost">
@@ -128,6 +148,24 @@ button:active {
 </div>
 
 <script>
+//フリマ手数料設定
+let feeRate = 0.10;
+let marketName = "メルカリ";
+
+function setMarket(market) {
+  if(market === 'mercari'){
+    feeRate = 0.10;
+    marketName = "メルカリ";
+  } else if(market === 'rakuma'){
+    feeRate = 0.10; // 販売回数によって変動するのでとりあえず10％で設定
+    marketName = "ラクマ";
+  } else if(market === 'yahoo'){
+    feeRate = 0.05;
+    marketName = "Yahoo";
+  }
+  calculate(); // 市場を切り替えたら再計算
+}
+
 // DOM要素の取得
 const costInput = document.getElementById("cost");
 const priceInput = document.getElementById("price");
@@ -148,8 +186,8 @@ function calculate() {
     return;
   }
 
-  // 手数料を計算（販売価格の10%）
-  const fee = price * 0.1;
+  // 手数料を計算（手数料はボタンによって変動するので変数を呼び出す）
+  const fee = price * feeRate;
   // 利益を計算（販売価格 - 手数料 - 仕入れ価格 - 送料）
   const profit = price - fee - cost - shipping;
   // 利益率を計算
@@ -178,7 +216,7 @@ function saveCurrent() {
 
   if (!price) return; // 販売価格が入力されていない場合は保存しない
 
-  const fee = price * 0.1;
+  const fee = price * feeRate;
   const profit = price - fee - cost - shipping;
   const rate = (profit / price) * 100;
 
