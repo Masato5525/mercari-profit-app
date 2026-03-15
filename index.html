@@ -121,7 +121,7 @@ button:active {
 <label>送料</label>
 <input type="number" id="shipping">
 
-<div class="fee-info"> ※ メルカリ販売手数料：10％</div>
+<div class="fee-info" id="feeInfo"> ※ メルカリ販売手数料：10％</div>
 
 <div class="result" id="output"></div>
 
@@ -164,6 +164,9 @@ function setMarket(market) {
     feeRate = 0.05;
     marketName = "Yahoo";
   }
+
+  feeInfo.innerText = '※ ${marketName}販売手数料：${feeRate * 100}%'; // 手数料情報を更新
+
   calculate(); // 市場を切り替えたら再計算
 }
 
@@ -173,6 +176,7 @@ const priceInput = document.getElementById("price");
 const shippingInput = document.getElementById("shipping");
 const output = document.getElementById("output");
 const historyList = document.getElementById("historyList");
+const feeInfo = document.getElementById("feeInfo");
 
 // 利益を計算して表示する関数
 function calculate() {
