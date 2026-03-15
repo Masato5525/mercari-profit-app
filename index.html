@@ -226,11 +226,14 @@ function saveCurrent() {
 
   //新しい履歴を先頭に追加
   history.unshift({
+    cost: cost,
+    price: price,
     profit: Math.round(profit),
     fee: Math.round(fee),
     shipping: shipping,
     rate: rate.toFixed(1),
-    comment: comment
+    comment: comment,
+    market: marketName
   });
 
   //履歴が5件超えたら古いデータを削除
@@ -283,9 +286,20 @@ function renderHistory() {
   history.forEach(item => {
     historyList.innerHTML += `
       <div>
-        利益: ${item.profit}円 / 手数料: ${item.fee}円 /
-        送料: ${item.shipping}円 / 利益率: ${item.rate}%
+        ${item.market}
       </div>
+
+      <div>
+        仕入：${item.cost}円 / 販売：${item.price}円
+      </div>
+
+      <div>
+        利益: ${item.profit}円 /
+        手数料: ${item.fee}円 /
+        送料: ${item.shipping}円 /
+        利益率: ${item.rate}%
+      </div>
+
       <div>コメント: ${item.comment || ""}</div>
       <hr>
     `;
