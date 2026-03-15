@@ -26,6 +26,22 @@ body {
   font-size: 16px;
 }
 
+.market-buttons button:active {
+  filter: brightness(0.75);
+}
+
+.mercari-btn {
+  background: #4CAF50; /* 緑 */
+}
+
+.rakuma-btn {
+  background: #2196F3; /* 青 */
+}
+
+.yahoo-btn {
+  background: #F44336; /* 赤 */
+}
+
 input {
   width: 100%;
   padding: 8px;
@@ -106,9 +122,9 @@ button:active {
 
 <div class="market-buttons">
 
-<button onclick="setMarket('mercari')">メルカリ</button>
-<button onclick="setMarket('rakuma')">ラクマ</button>
-<button onclick="setMarket('yahoo')">Yahoo</button>
+<button id = "mercariBtn" class = "mercari-btn" onclick = "setMarket('mercari')">メルカリ</button>
+<button id = "rakumaBtn" class = "rakuma-btn" onclick = "setMarket('rakuma')">ラクマ</button>
+<button id = "yahooBtn" class="yahoo-btn" onclick = "setMarket('yahoo')">Yahoo</button>
 
 </div>
 
@@ -150,6 +166,9 @@ button:active {
 
 <script>
 // DOM要素の取得
+const mercariBtn = document.getElementById("mercariBtn");
+const rakumaBtn = document.getElementById("rakumaBtn");
+const yahooBtn = document.getElementById("yahooBtn");
 const costInput = document.getElementById("cost");
 const priceInput = document.getElementById("price");
 const shippingInput = document.getElementById("shipping");
@@ -162,6 +181,11 @@ let feeRate = 0.10;
 let marketName = "メルカリ";
 
 function setMarket(market) {
+// ボタンのアクティブ状態を更新
+mercariBtn.classList.remove("active");
+rakumaBtn.classList.remove("active");
+yahooBtn.classList.remove("active");
+
   if(market === 'mercari'){
     feeRate = 0.10;
     marketName = "メルカリ";
@@ -177,7 +201,6 @@ function setMarket(market) {
 
   calculate(); // 市場を切り替えたら再計算
 }
-
 
 // 利益を計算して表示する関数
 function calculate() {
@@ -322,6 +345,8 @@ renderHistory();
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
 }
+
+setMarket('mercari'); // 初期設定をメルカリに設定
 </script>
 
 
