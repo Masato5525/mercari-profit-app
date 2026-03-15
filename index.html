@@ -4,6 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="UTF-8">
 <title>フリマ利益計算</title>
+<link rel="manifest" href="manifest.json">
 
 <style>
 body {
@@ -298,7 +299,12 @@ shippingInput.addEventListener("input", calculate);
 
 // ページ読み込み時に履歴を表示
 renderHistory();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
 </script>
+
 
 </body>
 </html>
