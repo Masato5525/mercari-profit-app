@@ -149,6 +149,14 @@ button:active {
 </div>
 
 <script>
+// DOM要素の取得
+const costInput = document.getElementById("cost");
+const priceInput = document.getElementById("price");
+const shippingInput = document.getElementById("shipping");
+const output = document.getElementById("output");
+const historyList = document.getElementById("historyList");
+const feeInfo = document.getElementById("feeInfo");
+
 //フリマ手数料設定
 let feeRate = 0.10;
 let marketName = "メルカリ";
@@ -165,18 +173,11 @@ function setMarket(market) {
     marketName = "Yahoo";
   }
 
-  feeInfo.innerText = '※ ${marketName}販売手数料：${feeRate * 100}%'; // 手数料情報を更新
+  feeInfo.innerText = `※ ${marketName}販売手数料：${feeRate * 100}%`; // 手数料情報を更新
 
   calculate(); // 市場を切り替えたら再計算
 }
 
-// DOM要素の取得
-const costInput = document.getElementById("cost");
-const priceInput = document.getElementById("price");
-const shippingInput = document.getElementById("shipping");
-const output = document.getElementById("output");
-const historyList = document.getElementById("historyList");
-const feeInfo = document.getElementById("feeInfo");
 
 // 利益を計算して表示する関数
 function calculate() {
